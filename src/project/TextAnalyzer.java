@@ -5,50 +5,77 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class TextAnalyzer {
-	public static String option;
-	public static String fileName;
+	private String option;
+	private String fileName;
 
-	public static void main(String[] args) throws IOException {
-		setOptionAndFileName(args);
-		analyzeText(option, fileName);
+	public TextAnalyzer() {
+		option = "-a";
+		fileName = "usdeclar.txt";
 	}
 
-	public static void setOptionAndFileName(String[] args) {
+	/**
+	 * @return the option
+	 */
+	public String getOption() {
+		return option;
+	}
+
+	/**
+	 * @param option the option to set
+	 */
+	public void setOption(String option) {
+		this.option = option;
+	}
+
+	/**
+	 * @return the fileName
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+
+	/**
+	 * @param fileName the fileName to set
+	 */
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public TextAnalyzer(String[] args) {
+		this();
 		if (args.length == 2) {
 			option = args[0];
 			fileName = args[1];
-		} else {
-			option = "-a";
-			fileName = "usdeclar.txt";
 		}
 	}
 
-	public static void analyzeText(String option, String fileName) throws IOException {
+	public void analyzeText() throws IOException {
 		switch (option) {
 		case "-a":
-			System.out.println("No. of lines in file: " + getLineCount(fileName));
-			System.out.println("No. of words in file: " + getWordCount(fileName));
-			System.out.println("No. of characters in file: " + getCharacterCount(fileName));
+			System.out.println("No. of lines in file: " + getLineCount());
+			System.out.println("No. of words in file: " + getWordCount());
+			System.out.println("No. of characters in file: " + getCharacterCount());
 			break;
 		case "-l":
-			System.out.println("No. of lines in file: " + getLineCount(fileName));
+			System.out.println("No. of lines in file: " + getLineCount());
 			break;
 		case "-w":
-			System.out.println("No. of words in file: " + getWordCount(fileName));
+			System.out.println("No. of words in file: " + getWordCount());
 			break;
 		case "-c":
-			System.out.println("No. of characters in file: " + getCharacterCount(fileName));
+			System.out.println("No. of characters in file: " + getCharacterCount());
 			break;
 		default:
 			break;
 		}
 	}
 
-	public static int getCharacterCount(String fileName) throws IOException {
+	public int getCharacterCount() throws IOException {
 		int count = 0;
-		List<String> list = readFileIntoList(fileName);
+		List<String> list = readFileIntoList();
 		for (String line : list) {
 			count += line.length();
 		}
@@ -56,22 +83,23 @@ public class TextAnalyzer {
 
 	}
 
-	public static int getWordCount(String fileName) throws IOException {
+	public int getWordCount() throws IOException {
 		int count = 0;
-		List<String> list = readFileIntoList(fileName);
+		List<String> list = readFileIntoList();
+		Pattern pattern = Pattern.compile("[ ]");
 		for (String line : list) {
-			String[] words = line.split("[ ]");
+			String[] words = pattern.split(line);
 			count += words.length;
 		}
 		return count;
 	}
 
-	public static int getLineCount(String fileName) throws IOException {
-		List<String> list = readFileIntoList(fileName);
+	public int getLineCount() throws IOException {
+		List<String> list = readFileIntoList();
 		return list.size();
 	}
 
-	public static List<String> readFileIntoList(String fileName) throws IOException {
+	public List<String> readFileIntoList() throws IOException {
 		List<String> list = new ArrayList<>();
 		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))) {
 			String line = "";
